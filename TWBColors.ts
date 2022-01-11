@@ -4,6 +4,18 @@
  */
 namespace TWBColors {
   /**
+   * Sets the text background color value between 0(black) and 256(white). If the range value is outside
+   * a valid range, the background will be black.
+   *
+   * @param text - The text string
+   * @param range - The background color.
+   */
+  export function ByColorValue_Bg(text: string, range: number = 256) {
+    const colorValue = range >= 0 && range <= 256 ? range : 0;
+
+    return `\x1b[48;5;${colorValue}m${text}\x1b[0m`;
+  }
+  /**
    * Sets the text forground color to a color value between 0(black) and 256(white). If the range
    * value is outside the expected range, the color will be white. You can easily find the chart using
    * a search engine.
@@ -50,6 +62,13 @@ namespace TWBColors {
    */
   export function Invert(text: string) {
     return `\x1b[7m${text}\x1b[0m`;
+  }
+  /**
+   * Black coloured text.
+   * @param text - The text string
+   */
+  export function Black(text: string) {
+    return ByColorValue(text, 0);
   }
   /**
    * Red coloured text.
