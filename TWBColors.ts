@@ -5,7 +5,7 @@
  * The default(and only export) is the namespace. To use this library, 
  * import the script into your main project: 
  *
- *  import Colors from "../<path>/twb-colors";
+ *  import Colors from "../<path>/TWBColors";
  *
  * Then just call something like console.log(Colors.Thicc(Colors.Red("My Text")));
  * 
