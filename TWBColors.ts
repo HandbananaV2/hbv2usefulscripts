@@ -1,6 +1,14 @@
 /**
  * A custom library which was created to replace the Colors NPM module which
  * has been corrupted. This is a basic library. Don't expect anything else.
+ * 
+ * The default(and only export) is the namespace. To use this library, 
+ * import the script into your main project: 
+ *
+ *  import Colors from "../<path>/twb-colors";
+ *
+ * Then just call something like console.log(Colors.Thicc(Colors.Red("My Text")));
+ * 
  */
 namespace TWBColors {
   /**
