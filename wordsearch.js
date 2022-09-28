@@ -2,7 +2,8 @@
 /*
  * Import the glob library for system IO.
  *
- * You must install the package.json file using `npm --init`, then install glob, to run this script.
+ * You must install the package.json file using `npm --init`, then install glob, to run this script. If you don't want to do that,
+ * you can install glob globally using the -g parameter and run this script from anywhere. 
  *
  * Syntax: node wordsearch.js [wordcount] [path]
  * eg. node wordsearch.js 12 /storage
