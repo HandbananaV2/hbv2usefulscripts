@@ -14,7 +14,13 @@ const glob = require("glob");
 const fs = require("fs");
 const exec = require("child_process").execSync;
 const path = require("path");
-
+/*
+* Add your file extensions that you want to look for here.
+*/
+const whiteList = [".txt",".xml",".html",".json"];
+/*
+*
+*/
 var colors = {
   /**
    * Sets the text background color value between 0(black) and 256(white). If the range value is outside
@@ -368,21 +374,13 @@ const main = () => {
            */
           if (dataType.isFile()) {
             /*
-             * Ignore these.
+             * Extension whitelist. IF the extension is not on the white list, ignore it.
              */
-            if (
-              [
-                ".jpg",
-                ".png",
-                ".jpeg",
-                ".mpg",
-                ".mpv",
-                ".gif",
-                ".wav",
-                ".mp3",
-                ".mov",
-              ].includes(path.extname(fileIndex))
-            ) {
+            const ext = path.extname(fileIndex);
+             /*
+             * Files without an extension will be scannned too.
+             */
+            if (ext && ! whiteList.includes(ext) ) {
               index++;
               continue;
             }
