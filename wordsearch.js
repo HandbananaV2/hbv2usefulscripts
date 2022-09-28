@@ -1,14 +1,13 @@
 #!/bin/node
 /*
- * Import the glob library for system IO. This requires you to install npm, and then 
- * install the glob module.
+ * Import the glob library for system IO.
  *
- * RUN: 
- *      This script is run using the following syntax: 
+ * You must install the package.json file using `npm --init`, then install glob, to run this script.
  *
- *      node wordsearch.js [wordcount] [path]
+ * Syntax: node wordsearch.js [wordcount] [path]
+ * eg. node wordsearch.js 12 /storage
  *
- *      Eg: node wordsearch.js 10 /storage
+ * Matches will be stored in the `wordsearch_matches.log` file.
  */
 const glob = require("glob");
 const fs = require("fs");
@@ -237,7 +236,10 @@ var colors = {
     return this.ByColorValue(text, 124);
   },
 };
-
+/*
+ *
+ */
+const wordSearchLog = "wordsearch_matches.log";
 /*
  * Fetches all directories and files relative to source.
  */
@@ -313,6 +315,28 @@ const main = () => {
     if (err) {
       console.log("Error", colors.Red(err));
     } else {
+      /*
+       * Truncate the log and create a new one.
+       */
+      if (fs.existsSync(wordSearchLog)) fs.truncateSync(wordSearchLog, 0);
+      /*
+       *
+       */
+      const date = new Date();
+      /*
+       * A welcome log message!
+       */
+      fs.appendFileSync(
+        wordSearchLog,
+        "Starting new log " +
+          date.toDateString() +
+          " - " +
+          date.toTimeString() +
+          "\n This log only shows matches.\n\n"
+      );
+      /*
+       *
+       */
       console.log(
         colors.Red(
           `Processing directory structure with ${colors.Green(
@@ -343,12 +367,20 @@ const main = () => {
            */
           if (dataType.isFile()) {
             /*
-            * Ignore these.
-            */
+             * Ignore these.
+             */
             if (
-              [".jpg", ".png", ".jpeg", ".mpg", ".mpv", ".gif"].includes(
-                path.extname(fileIndex)
-              )
+              [
+                ".jpg",
+                ".png",
+                ".jpeg",
+                ".mpg",
+                ".mpv",
+                ".gif",
+                ".wav",
+                ".mp3",
+                ".mov",
+              ].includes(path.extname(fileIndex))
             ) {
               index++;
               continue;
@@ -373,6 +405,16 @@ const main = () => {
                */
               if (+number === +wordCount) {
                 matches++;
+                /*
+                 *
+                 */
+                fs.appendFileSync(
+                  "wordsearch_matches.log",
+                  `[MATCH] Discovered possible match: (${number} = ${wordCount}) ` +
+                    fileIndex +
+                    "\n"
+                );
+
                 console.log(
                   colors.Thicc(
                     colors.Green(
