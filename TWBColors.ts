@@ -236,16 +236,16 @@ namespace API_Colors {
    */
   export function PrintAsWarning(text: string, thicc: boolean = false) {
     thicc
-      ? console.error(API_Colors.Thicc(API_Colors.Yellow(text)))
-      : console.error(API_Colors.Yellow(text));
+      ? console.log(API_Colors.Thicc(API_Colors.Yellow(text)))
+      : console.log(API_Colors.Yellow(text));
   }
   /**
    *
    */
   export function PrintAsNotification(text: string, thicc: boolean = false) {
     thicc
-      ? console.error(API_Colors.Thicc(API_Colors.PureWhite(text)))
-      : console.error(API_Colors.PureWhite(text));
+      ? console.log(API_Colors.Thicc(API_Colors.PureWhite(text)))
+      : console.log(API_Colors.PureWhite(text));
   }
 }
 
