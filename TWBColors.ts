@@ -1,16 +1,8 @@
 /**
  * A custom library which was created to replace the Colors NPM module which
  * has been corrupted. This is a basic library. Don't expect anything else.
- * 
- * The default export is the namespace. To use this library, 
- * import the script into your main project: 
- *
- *  import Colors from "../<path>/TWBColors";
- *
- * Then just call something like console.log(Colors.Thicc(Colors.Red("My Text")));
- * 
  */
-namespace TWBColors {
+namespace API_Colors {
   /**
    * Sets the text background color value between 0(black) and 256(white). If the range value is outside
    * a valid range, the background will be black.
@@ -35,6 +27,33 @@ namespace TWBColors {
     const colorValue = range >= 0 && range <= 256 ? range : 256;
 
     return `\x1b[38;5;${colorValue}m${text}\x1b[0m`;
+  }
+  /**
+   * Prints text output in an error format. Black bold text, red background.
+   *
+   * @param text - Text
+   * @returns text
+   */
+  export function ErrorType(text: string) {
+    return ByColorValue_Bg(Thicc(Black(text)), 1);
+  }
+  /**
+   * Same as function ErrorType() expect causes the text to blink.
+   *
+   * @param text
+   * @returns text
+   */
+  export function ErrorTypeFlash(text: string) {
+    return Blink(ByColorValue_Bg(Thicc(Black(text)), 1));
+  }
+  /**
+   * Prints the text in bold yellow.
+   *
+   * @param text
+   * @returns text
+   */
+  export function WarningType(text: string) {
+    return Yellow(Thicc(text));
   }
   /**
    * Prints bold text
@@ -204,6 +223,30 @@ namespace TWBColors {
   export function Crimson(text: string) {
     return ByColorValue(text, 124);
   }
+  /**
+   *
+   */
+  export function PrintAsError(text: string, thicc: boolean = false) {
+    thicc
+      ? console.error(API_Colors.Thicc(API_Colors.Red(text)))
+      : console.error(API_Colors.Red(text));
+  }
+  /**
+   *
+   */
+  export function PrintAsWarning(text: string, thicc: boolean = false) {
+    thicc
+      ? console.error(API_Colors.Thicc(API_Colors.Yellow(text)))
+      : console.error(API_Colors.Yellow(text));
+  }
+  /**
+   *
+   */
+  export function PrintAsNotification(text: string, thicc: boolean = false) {
+    thicc
+      ? console.error(API_Colors.Thicc(API_Colors.PureWhite(text)))
+      : console.error(API_Colors.PureWhite(text));
+  }
 }
 
-export default TWBColors;
+export default API_Colors;
