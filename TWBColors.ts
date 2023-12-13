@@ -2,7 +2,15 @@
  * A custom library which was created to replace the Colors NPM module which
  * has been corrupted. This is a basic library. Don't expect anything else.
  */
-namespace API_Colors {
+namespace TWBColors {
+  /**
+  * Ensures the returned color is between 0 and 256.
+  * 
+  * @param number - The input color value between 0 and 256.
+  */
+  function __range(input: number) {
+    return Math.min(Math.max(input, 0), 256);
+  }
   /**
    * Sets the text background color value between 0(black) and 256(white). If the range value is outside
    * a valid range, the background will be black.
@@ -11,9 +19,7 @@ namespace API_Colors {
    * @param range - The background color.
    */
   export function ByColorValue_Bg(text: string, range: number = 256) {
-    const colorValue = range >= 0 && range <= 256 ? range : 0;
-
-    return `\x1b[48;5;${colorValue}m${text}\x1b[0m`;
+    return `\x1b[48;5;${__range(range)}m${text}\x1b[0m`;
   }
   /**
    * Sets the text forground color to a color value between 0(black) and 256(white). If the range
@@ -24,9 +30,7 @@ namespace API_Colors {
    * @param range - The number color value(0 - 256)
    */
   export function ByColorValue(text: string, range: number = 256) {
-    const colorValue = range >= 0 && range <= 256 ? range : 256;
-
-    return `\x1b[38;5;${colorValue}m${text}\x1b[0m`;
+    return `\x1b[38;5;${__range(range)}m${text}\x1b[0m`;
   }
   /**
    * Prints text output in an error format. Black bold text, red background.
@@ -223,30 +227,6 @@ namespace API_Colors {
   export function Crimson(text: string) {
     return ByColorValue(text, 124);
   }
-  /**
-   *
-   */
-  export function PrintAsError(text: string, thicc: boolean = false) {
-    thicc
-      ? console.error(API_Colors.Thicc(API_Colors.Red(text)))
-      : console.error(API_Colors.Red(text));
-  }
-  /**
-   *
-   */
-  export function PrintAsWarning(text: string, thicc: boolean = false) {
-    thicc
-      ? console.log(API_Colors.Thicc(API_Colors.Yellow(text)))
-      : console.log(API_Colors.Yellow(text));
-  }
-  /**
-   *
-   */
-  export function PrintAsNotification(text: string, thicc: boolean = false) {
-    thicc
-      ? console.log(API_Colors.Thicc(API_Colors.PureWhite(text)))
-      : console.log(API_Colors.PureWhite(text));
-  }
 }
 
-export default API_Colors;
+export default TWBColors;
