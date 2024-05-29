@@ -148,7 +148,7 @@ export default class ComponentInputAnalyzer {
       }
       /* Check the regular expression if its present. */
       if (options.matches) {
-        if (options.matches.test(input)) {
+        if (!options.matches.test(input)) {
           /* */
           this.triggerErrr(
             options.msg ??
