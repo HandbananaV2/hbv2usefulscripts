@@ -173,14 +173,14 @@ export default class ComponentInputAnalyzer {
         const max = options.maxLen as number;
         const min = options.minLen as number;
         /* Check the value range.  */
-        if (options.maxLen != undefined && n > max) {
+        if (options.maxLen !== undefined && n > max) {
           /* */
           this.triggerErrr(
             options.msg ??
               `Input expects a number between ${options.minLen} and ${options.maxLen}, but received ${n}`
           );
           /* */
-        } else if (options.minLen != undefined && n < min) {
+        } else if (options.minLen !== undefined && n < min) {
           /* */
           this.triggerErrr(
             options.msg ??
