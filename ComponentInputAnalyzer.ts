@@ -65,8 +65,8 @@ export default class ComponentInputAnalyzer {
   public requires(
     input: any,
     options: {
-      minLen?: null | number; // Min length
-      maxLen?: null | number; // Max length
+      minLen?: undefined | number; // Min length
+      maxLen?: undefined | number; // Max length
       type?: "string" | "number" | "exist" | "email" | "match"; // Type to expect
       msg?: undefined | string; // Message to display on error
       matches?: RegExp;
