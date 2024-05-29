@@ -67,7 +67,7 @@ export default class ComponentInputAnalyzer {
     options: {
       minLen?: undefined | number; // Min length
       maxLen?: undefined | number; // Max length
-      type?: "string" | "number" | "exist" | "email" | "match"; // Type to expect
+      type?: "string" | "number" | "exist" | "email" | "match" // Type to expect
       msg?: undefined | string; // Message to display on error
       matches?: RegExp;
       matchField?: any | any[]; // Match field
@@ -118,7 +118,7 @@ export default class ComponentInputAnalyzer {
         );
       }
       /* Check min length */
-      if (options.minLen !== null) {
+      if (options.minLen !== undefined) {
         const t = input as string;
         const l = options.minLen as number;
         /* */
@@ -129,7 +129,7 @@ export default class ComponentInputAnalyzer {
               `Input string is shorter than minLength, minLength: ${options.minLen}`
           );
         }
-      } else if (options.maxLen !== null) {
+      } else if (options.maxLen !== undefined) {
         /* Check max length */
         const t = input as string;
         const l = options.maxLen as number;
@@ -168,14 +168,14 @@ export default class ComponentInputAnalyzer {
         const min = options.minLen as number;
 
         /* */
-        if (options.maxLen != null && n > max) {
+        if (options.maxLen != undefined && n > max) {
           /* */
           this.triggerErrr(
             options.msg ??
               `Input expects a number between ${options.minLen} and ${options.maxLen}, but received ${n}`
           );
           /* */
-        } else if (options.minLen != null && n < min) {
+        } else if (options.minLen != undefined && n < min) {
           /* */
           this.triggerErrr(
             options.msg ??
