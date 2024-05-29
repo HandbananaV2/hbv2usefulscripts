@@ -47,6 +47,7 @@ export default class ComponentInputAnalyzer {
    * Triggers an error, and blocks further chain calls.
    */
   public triggerErrr(msg: string) {
+    if (this.hasError) return; // Do not call twice.
     this.hasError = true;
     this.errorCb(true, msg);
   }
@@ -67,7 +68,7 @@ export default class ComponentInputAnalyzer {
     options: {
       minLen?: undefined | number; // Min length
       maxLen?: undefined | number; // Max length
-      type?: "string" | "number" | "exist" | "email" | "match" // Type to expect
+      type?: "string" | "number" | "exist" | "email" | "match"; // Type to expect
       msg?: undefined | string; // Message to display on error
       matches?: RegExp;
       matchField?: any | any[]; // Match field
@@ -92,6 +93,7 @@ export default class ComponentInputAnalyzer {
               options.msg ??
                 "One or more of the match field(s) do not match the input field value or type."
             );
+            break;
           }
         }
       } else if (input !== options.matchField) {
@@ -109,7 +111,7 @@ export default class ComponentInputAnalyzer {
           options.msg ?? `Input expects string type, but received type ${typeO}`
         );
       }
-      /* */
+      /* If we're asked to check string for an email type, validate it */
       if (typeRequired === "email" && !EmailValidator.validate(input)) {
         /* */
         this.triggerErrr(
@@ -129,7 +131,9 @@ export default class ComponentInputAnalyzer {
               `Input string is shorter than minLength, minLength: ${options.minLen}`
           );
         }
-      } else if (options.maxLen !== undefined) {
+      }
+      /* Check max length */
+      if (options.maxLen !== undefined) {
         /* Check max length */
         const t = input as string;
         const l = options.maxLen as number;
@@ -140,14 +144,16 @@ export default class ComponentInputAnalyzer {
             options.msg ??
               `Input string is longer than maxLength, maxLength: ${options.maxLen}`
           );
-        } else if (options.matches) {
-          if (options.matches.test(input)) {
-            /* */
-            this.triggerErrr(
-              options.msg ??
-                `Input string does not match regular expression: ${options.matches}`
-            );
-          }
+        }
+      }
+      /* Check the regular expression if its present. */
+      if (options.matches) {
+        if (options.matches.test(input)) {
+          /* */
+          this.triggerErrr(
+            options.msg ??
+              `Input string does not match regular expression: ${options.matches}`
+          );
         }
       }
     } else if (typeRequired === "number") {
@@ -166,8 +172,7 @@ export default class ComponentInputAnalyzer {
         const n = input as number;
         const max = options.maxLen as number;
         const min = options.minLen as number;
-
-        /* */
+        /* Check the value range.  */
         if (options.maxLen != undefined && n > max) {
           /* */
           this.triggerErrr(
