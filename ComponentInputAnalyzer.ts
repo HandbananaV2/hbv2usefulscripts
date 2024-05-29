@@ -2,10 +2,10 @@
  * THIS SCRIPT IS LICENSED UNDER GPLv3.
  *
  * For more information visit: https://www.gnu.org/licenses/gpl-3.0.txt
- * 
+ *
  * Written by Michael, mikeh@tweeby.ca
  *
- * Requires the email-validator node module for typescript. 
+ * Requires the email-validator node module for typescript.
  *
  * This library is a very simple chain based input validator. It takes an input and checks it against the provided
  * options. On error, the chain is broken and an error is sent back to the the error callback. If "present" is set when the callback
@@ -14,7 +14,7 @@
  *
  * This function is intended to be used within a chain for validation. The chainIndex sent to the error callback is the index
  * starting from the first requires() call to the last one.
- * 
+ *
  * ErrorCallback takes three arguments:
  *
  *  1) A boolean signifying an error was sent.
@@ -52,7 +52,7 @@ export default class ComponentInputAnalyzer {
   }
   /*
    * Called at the end of the requires() chain. Will only trigger if no errors
-   * are thrown in the chain. 
+   * are thrown in the chain.
    */
   public end() {
     if (this.hasError) return this;
@@ -154,7 +154,6 @@ export default class ComponentInputAnalyzer {
       /*
        * Performs typechecks for numeric inputs.
        */
-      /* */
       if (typeO !== "number" || isNaN(input)) {
         /* */
         this.triggerErrr(
@@ -162,20 +161,21 @@ export default class ComponentInputAnalyzer {
         );
       }
       /* Check for value range */
-      if (options.minLen !== undefined && options.maxLen !== undefined) {
+      if (options.minLen !== undefined || options.maxLen !== undefined) {
         /* */
         const n = input as number;
         const max = options.maxLen as number;
         const min = options.minLen as number;
+
         /* */
-        if (n > max) {
+        if (options.maxLen != null && n > max) {
           /* */
           this.triggerErrr(
             options.msg ??
               `Input expects a number between ${options.minLen} and ${options.maxLen}, but received ${n}`
           );
           /* */
-        } else if (n < min) {
+        } else if (options.minLen != null && n < min) {
           /* */
           this.triggerErrr(
             options.msg ??
