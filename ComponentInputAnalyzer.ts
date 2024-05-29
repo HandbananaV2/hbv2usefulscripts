@@ -22,7 +22,7 @@
  *  3) A number indicating the index in the chain that triggerred the break.
  *
  * At the end of the chain, you must call end() which sends the signal to the error callback signifying no error has
- * occurred.
+ * occurred IF no erorr has occurred in the chain.
  */
 import EmailValidator from "email-validator";
 
