@@ -23,12 +23,14 @@
  *
  * At the end of the chain, you must call end() which sends the signal to the error callback signifying no error has
  * occurred IF no erorr has occurred in the chain.
+ * 
+ * This function will only return one error at a time, beginning from the top.
  */
 import EmailValidator from "email-validator";
 
 /* */
 export default class ComponentInputAnalyzer {
-  public hasError: boolean;
+  public hasError: boolean = false;
   public chainIndex: number = 0; // Tells us which index on the chain broke.
   /* */
   errorCb: (present: boolean, t?: string, chainIndex?: number) => void;
@@ -61,7 +63,7 @@ export default class ComponentInputAnalyzer {
     this.errorCb(false);
   }
   /*
-   *
+   * Adds a check to the chain.
    */
   public requires(
     input: any,
@@ -70,7 +72,10 @@ export default class ComponentInputAnalyzer {
       maxLen?: undefined | number; // Max length
       type?: "string" | "number" | "exist" | "email" | "match"; // Type to expect
       msg?: undefined | string; // Message to display on error
-      matches?: RegExp;
+      matches?: {
+        inverted: boolean;
+        match: RegExp;
+      },
       matchField?: any | any[]; // Match field
     }
   ) {
@@ -81,25 +86,49 @@ export default class ComponentInputAnalyzer {
     /* The type that the field must be to pass the check. */
     const typeRequired = options.type || "string";
     /*
-     * The match field checks if the input field matches the value of the secondary field(s) including
-     * the type. matchField can be an array or a single value.
+     * This checks if the field value matches the field value(s) of others. If 'matches' is set though,
+    * it will use the RegExp value to validate the input instead.
+    * 
+    * By default the function will fail if the expression does not match. If 'inverted' is set to true, the function
+    * will fail if it finds a match instead.
      */
     if (options.type === "match") {
-      /* */
-      if (Array.isArray(options.matchField)) {
-        for (const item of options.matchField) {
-          if (item !== input) {
+      if (options.matches) {
+        if (options.matches.inverted) {
+          if (options.matches.match.test(input)) {
+            /* */
             this.triggerErrr(
               options.msg ??
-                "One or more of the match field(s) do not match the input field value or type."
+              `Input string does not match regular expression: ${options.matches}`
             );
-            break;
           }
         }
-      } else if (input !== options.matchField) {
-        this.triggerErrr(
-          options.msg ?? "Input field does not match secondary match field."
-        );
+        else if (!options.matches.match.test(input)) {
+            /* */
+            this.triggerErrr(
+              options.msg ??
+              `Input string does not match regular expression: ${options.matches}`
+            );
+          }
+        
+      }
+      else {
+        /* */
+        if (Array.isArray(options.matchField)) {
+          for (const item of options.matchField) {
+            if (item !== input) {
+              this.triggerErrr(
+                options.msg ??
+                "One or more of the match field(s) do not match the input field value or type."
+              );
+              break;
+            }
+          }
+        } else if (input !== options.matchField) {
+          this.triggerErrr(
+            options.msg ?? "Input field does not match secondary match field."
+          );
+        }
       }
     } else if (typeRequired === "string" || typeRequired === "email") {
       /*
@@ -116,7 +145,7 @@ export default class ComponentInputAnalyzer {
         /* */
         this.triggerErrr(
           options.msg ??
-            `Input expects email, but the provided input is malformed.`
+          `Input expects email, but the provided input is malformed.`
         );
       }
       /* Check min length */
@@ -128,7 +157,7 @@ export default class ComponentInputAnalyzer {
           /* */
           this.triggerErrr(
             options.msg ??
-              `Input string is shorter than minLength, minLength: ${options.minLen}`
+            `Input string is shorter than minLength, minLength: ${options.minLen}`
           );
         }
       }
@@ -142,17 +171,7 @@ export default class ComponentInputAnalyzer {
           /* */
           this.triggerErrr(
             options.msg ??
-              `Input string is longer than maxLength, maxLength: ${options.maxLen}`
-          );
-        }
-      }
-      /* Check the regular expression if its present. */
-      if (options.matches) {
-        if (!options.matches.test(input)) {
-          /* */
-          this.triggerErrr(
-            options.msg ??
-              `Input string does not match regular expression: ${options.matches}`
+            `Input string is longer than maxLength, maxLength: ${options.maxLen}`
           );
         }
       }
@@ -177,14 +196,14 @@ export default class ComponentInputAnalyzer {
           /* */
           this.triggerErrr(
             options.msg ??
-              `Input expects a number between ${options.minLen} and ${options.maxLen}, but received ${n}`
+            `Input expects a number between ${options.minLen} and ${options.maxLen}, but received ${n}`
           );
           /* */
         } else if (options.minLen !== undefined && n < min) {
           /* */
           this.triggerErrr(
             options.msg ??
-              `Input expects a number between ${options.minLen} and ${options.maxLen}, but received ${n}`
+            `Input expects a number between ${options.minLen} and ${options.maxLen}, but received ${n}`
           );
         }
       }
